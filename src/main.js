@@ -3,6 +3,9 @@ let config = {
     //width: 640,
     width: 720,
     height: 480,
+    render: {
+        pixelArt: true
+    },
     physics: {
         default: 'arcade',
         arcade:{
