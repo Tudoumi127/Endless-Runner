@@ -3,8 +3,10 @@ class Player extends Phaser.Physics.Arcade.Sprite{
         super(scene, x, y, texture, frame);
 
         scene.add.existing(this);
-        this.velocity = -500;
         scene.physics.add.existing(this, false);
+
+        this.velocity = -500;
+        this.hurtTimer = 200;
         this.body.setGravityY(800);
     
         this.FSM = new StateMachine('idle', {
@@ -13,7 +15,7 @@ class Player extends Phaser.Physics.Arcade.Sprite{
             jump: new JumpState(),
             //swing: new SwingState(),
             //dash: new DashState(),
-            //hurt: new HurtState(),
+            hurt: new HurtState(),
         }, [scene, this])
     }
 
@@ -32,12 +34,19 @@ class IdleState extends State {
         const { space } = scene.keys
         //const HKey = scene.keys.HKey
 
+        const hurt = scene.keys.hurt
+        const jump = scene.keys.space
+
         // transition to jump if pressing space
         //if(Phaser.Input.Keyboard.JustDown(space)) {
 
         if(Phaser.Input.Keyboard.JustDown(space)){
-            console.log('in the if statement');
             this.stateMachine.transition('jump')
+            return
+        }
+        if(scene.isCollided == true){
+            console.log('in hurt state')
+            this.stateMachine.transition('hurt')
             return
         }
     }
@@ -45,12 +54,26 @@ class IdleState extends State {
 
 class JumpState extends State {
     enter(scene, player) {
-        console.log('in jump state');
         player.setVelocityY(player.velocity);
         //hero.anims.play(`swing-${hero.direction}`)
         /*hero.once('animationcomplete', () => {
             this.stateMachine.transition('idle')
         })*/
         this.stateMachine.transition('idle')
+    }
+}
+
+class HurtState extends State {
+    enter(scene, player) {
+        player.setVelocityY(0)
+        scene.isCollided = false
+        player.setTint(0xFF0000)
+
+        player.setVelocityX(player.velocity/2)
+        scene.time.delayedCall(player.hurtTimer, ()=>{
+            player.setVelocityX(0)
+            player.clearTint()
+            this.stateMachine.transition('idle')
+        })
     }
 }

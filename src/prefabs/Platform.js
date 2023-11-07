@@ -16,7 +16,6 @@ class Platform extends Phaser.Physics.Arcade.Sprite{
         this.x -= this.moveSpeed;
 
         if (this.x <= game.config.width/2){
-            console.log("p");
             this.child = true;
         }
 
