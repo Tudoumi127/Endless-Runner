@@ -25,7 +25,7 @@ class Player extends Phaser.Physics.Arcade.Sprite{
 class IdleState extends State {
     enter(scene, player) {
         //player.setVelocity(0)
-        //hero.anims.play(`walk-${hero.direction}`)
+        player.anims.play(`idle`)
         //hero.anims.stop()
     }
 
@@ -45,7 +45,6 @@ class IdleState extends State {
             return
         }
         if(scene.isCollided == true){
-            console.log('in hurt state')
             this.stateMachine.transition('hurt')
             return
         }
@@ -55,11 +54,18 @@ class IdleState extends State {
 class JumpState extends State {
     enter(scene, player) {
         player.setVelocityY(player.velocity);
-        //hero.anims.play(`swing-${hero.direction}`)
-        /*hero.once('animationcomplete', () => {
+        player.anims.play(`jump`)
+        player.once('animationcomplete', () => {
             this.stateMachine.transition('idle')
-        })*/
-        this.stateMachine.transition('idle')
+        })
+        //this.stateMachine.transition('idle')
+    }
+
+    execute(scene, player) {
+        if(scene.isCollided == true){
+            this.stateMachine.transition('hurt')
+            return
+        }
     }
 }
 
@@ -67,7 +73,9 @@ class HurtState extends State {
     enter(scene, player) {
         player.setVelocityY(0)
         scene.isCollided = false
-        player.setTint(0xFF0000)
+        player.setTint(0xFF0000) //turn red
+        //player.anims.stop()
+        player.anims.play(`hurt`)
 
         player.setVelocityX(player.velocity/2)
         scene.time.delayedCall(player.hurtTimer, ()=>{

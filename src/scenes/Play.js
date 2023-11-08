@@ -5,10 +5,10 @@ class Play extends Phaser.Scene{
 
     preload(){
         this.load.image('placeholder', './assets/starfield.png');
-        this.load.spritesheet('character', './assets/CHaracter_002.png',{
-            frameWidth: 48,
-            frameHeight: 48,
-        })
+        /*this.load.spritesheet('character', './assets/player.png',{
+            frameWidth: 32,
+            frameHeight: 32,
+        })*/
     }
 
     create(){
@@ -20,11 +20,10 @@ class Play extends Phaser.Scene{
         //keySPACE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
         this.placeholder = this.add.tileSprite(0, 0, 720, 480, 'placeholder').setOrigin(0,0);
 
-        this.player = new Player(this, game.config.width/4, game.config.height - 500, 'character', 1).setOrigin(0,0);
+        this.player = new Player(this, game.config.width/4, game.config.height - 500, 'character', 0).setOrigin(0,0).setScale(1.5);
+        this.player.body.setSize(28,32).setOffset(2, 0);
         this.player.body.setCollideWorldBounds(true);
         this.world = this.player.body.touching;
-
-        this.player.body.setSize(30,38).setOffset(9, 10);
 
         const newPlatform = new Platform(this, game.config.width + borderUISize*3, borderUISize*5+borderPadding*2, '').setOrigin(0,0);
         this.platforms = this.physics.add.group(config = {
