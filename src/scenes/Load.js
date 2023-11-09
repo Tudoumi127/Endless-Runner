@@ -1,10 +1,11 @@
 class Load extends Phaser.Scene {
     constructor() {
-        super('loadScene')
+        super("loadScene")
     }
 
     preload() {
         this.load.path = './assets/'
+        this.load.image('placeholder', 'starfield.png');
         this.load.spritesheet('character', 'player.png', {
             frameWidth: 32,
             frameHeight: 32,

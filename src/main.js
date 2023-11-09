@@ -12,7 +12,7 @@ let config = {
             debug: true
         }
     },
-    scene: [ Load, Menu, Play ]
+    scene: [ Load, Menu, Play, GameOver ]
 }
 
 let game = new Phaser.Game(config);
@@ -20,6 +20,7 @@ let game = new Phaser.Game(config);
 let keyR;
 let keyLEFT;
 let keyRIGHT;*/
+let keyR;
 let keySPACE;
 
 //reserve keyboard vars

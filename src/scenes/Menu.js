@@ -11,10 +11,10 @@ class Menu extends Phaser.Scene{
         //this.add.image('placeholder1', './assets/starfield.png');
 
         let menuConfig = {
-            fontFamily: 'Courier',
+            fontFamily: 'Palatino',
             fontSize: '28px',
-            backgroundColor: '#F3B141',
-            color: '#843605',
+            backgroundColor: '#006666',
+            color: '#FFFFFF',
             align: 'right',
             padding: {
                 top: 5,
@@ -24,8 +24,8 @@ class Menu extends Phaser.Scene{
         }
 
         /*add a background image for the menu*/
-        this.add.text(game.config.width/2, game.config.height/2 - borderUISize - borderPadding, 'ENDLESS RUNNER', menuConfig).setOrigin(0.5);
-        this.add.text(game.config.width/2, game.config.height/2, 'Use <--> arrows to move & SPACE to jump', menuConfig).setOrigin(0.5);
+        this.add.text(game.config.width/2, game.config.height/2 - borderUISize - borderPadding, 'SEA STRIDER', menuConfig).setOrigin(0.5);
+        this.add.text(game.config.width/2, game.config.height/2, 'Use SPACE to jump', menuConfig).setOrigin(0.5);
 
         keySPACE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
     }
