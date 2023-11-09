@@ -12,6 +12,7 @@ class Platform extends Phaser.Physics.Arcade.Sprite{
         this.destroyed = false;
     }
 
+
     update(){
         this.x -= this.moveSpeed;
 

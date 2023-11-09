@@ -40,6 +40,7 @@ class Play extends Phaser.Scene{
 
         //tilesprite that will be moved later
         this.placeholder = this.add.tileSprite(0, 0, 720, 480, 'background').setOrigin(0,0);
+        this.midground = this.add.tileSprite(0, 0, 720, 480, 'midground').setOrigin(0,0);
 
         //make the player
         this.player = new Player(this, game.config.width/4, game.config.height - 500, 'character', 0).setOrigin(0,0).setScale(1.5);
@@ -52,17 +53,19 @@ class Play extends Phaser.Scene{
         this.bubbles = this.physics.add.group(config = {
             immovable: true,
         })
-        this.bubbles.add(newBubble);
+        //this.bubbles.add(newBubble);
 
         //makes new platforms at random
-        const newPlatform = new Platform(this, game.config.width + borderUISize*3, borderUISize*5+borderPadding*2, '', 0, this.speed).setOrigin(0,0);
+        const newPlatform = new Platform(this, game.config.width + borderUISize*3, borderUISize*5+borderPadding*2, 'turtle', 0, this.speed).setOrigin(0,0).setScale(1.5);
+        //const newPlatform = new Platform(this, game.config.width,Phaser.Math.Between(50, 300), "turtle", 0).setOrigin(0,0)
+        newPlatform.anims.play('turtleIdle');
         this.platforms = this.physics.add.group(config = {
             immovable: true,
         })
         this.platforms.add(newPlatform);
 
         //ground, physics and colliders
-        this.ground = this.add.tileSprite(0, game.config.height - 42, game.config.width, game.config.height/6, '').setOrigin(0,0);
+        this.ground = this.add.tileSprite(0, game.config.height - 30, game.config.width, game.config.height/6, '').setOrigin(0,0);
         this.physics.add.existing(this.ground, true);
         this.rocks = this.add.tileSprite(0, 20, 720, 480, 'rocks').setOrigin(0,0);
         this.upperrocks = this.add.tileSprite(0, 0, 720, 480, 'upperrocks').setOrigin(0,0);
@@ -77,14 +80,16 @@ class Play extends Phaser.Scene{
         this.scoreLeft = this.add.text(borderUISize + borderPadding, borderUISize + borderPadding * 2, this.score, scoreConfig);
 
         this.physics.add.collider(this.player, this.bubbles, (player, bubble) => {
-            bubble.destroy();
             this.score += 1
+            bubble.destroy();
             for (let i = 0; i<= 5; i++){
                 this.bubbles.add(newBubble);
                 i+=1
             }
             //bubble.bubIsFather = true;
         })
+
+        this.bubbles.add(newBubble);
 
 
         this.scoreTracker = this.time.addEvent({
@@ -100,8 +105,9 @@ class Play extends Phaser.Scene{
 
     update(){
         this.rocks.tilePositionX += 4;
-        this.upperrocks.tilePositionX += 4
-        this.placeholder.tilePositionX += 2;
+        this.upperrocks.tilePositionX += 4;
+        this.midground.tilePositionX += 2;
+        this.placeholder.tilePositionX += 1;
         this.player.update();
 
         //increment fsm
@@ -118,7 +124,8 @@ class Play extends Phaser.Scene{
 
             if(platform.child && !platform.isFather){
                 platform.child = false;
-                const newPlatform = new Platform(this, game.config.width + borderUISize*3, Phaser.Math.Between(50, 300), '', 0, this.speed).setOrigin(0,0);
+                const newPlatform = new Platform(this, game.config.width + borderUISize*3, Phaser.Math.Between(50, 300), 'turtle', 0, this.speed).setOrigin(0,0).setScale(1.5);
+                newPlatform.anims.play('turtleIdle');
                 this.platforms.add(newPlatform);
                 this.platforms.add(newPlatform);
                 this.platforms.add(newPlatform);
