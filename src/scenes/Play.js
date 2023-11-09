@@ -49,7 +49,8 @@ class Play extends Phaser.Scene{
         this.world = this.player.body.touching;
 
         //bubbles
-        const newBubble = new Bubble(this, game.config.width + borderUISize*8, borderUISize*2+borderPadding*5, 'rocket', 0, this.speed).setOrigin(0,0);
+        const newBubble = new Bubble(this, game.config.width + borderUISize*15, borderUISize*2+borderPadding*50, 'bubble', 0, this.speed).setOrigin(0,0);
+        newBubble.anims.play('bubbleIdle');
         this.bubbles = this.physics.add.group(config = {
             immovable: true,
         })
@@ -81,7 +82,9 @@ class Play extends Phaser.Scene{
 
         this.physics.add.collider(this.player, this.bubbles, (player, bubble) => {
             this.score += 1
+            this.sound.play('pop')
             bubble.destroy();
+            //bubble.anims.play('bubblePop');
             for (let i = 0; i<= 5; i++){
                 this.bubbles.add(newBubble);
                 i+=1
@@ -142,6 +145,7 @@ class Play extends Phaser.Scene{
             if(bubble.bubChild && !bubble.bubIsFather){
                 bubble.bubChild = false;
                 const newBubble = new Bubble(this, game.config.width + borderUISize*6, Phaser.Math.Between(50, 300), 'rocket', 0, this.speed).setOrigin(0,0);
+                newBubble.anims.play('bubbleIdle');
                 for (let i = 0; i<= 5; i++){
                     this.bubbles.add(newBubble);
                     i+=1

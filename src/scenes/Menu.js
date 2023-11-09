@@ -44,6 +44,10 @@ class Menu extends Phaser.Scene{
         this.add.text(game.config.width/2, game.config.height/2 + 180 , "Don't fall to the bottom", menuConfig).setOrigin(0.5);
         this.add.text(game.config.width/2, game.config.height/2 + 220, 'Press SPACE to start', startConfig).setOrigin(0.5);
         keySPACE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
+
+        let music = this.sound.add('loopmusic')
+        music.loop = true
+        music.play()
     }
 
     
@@ -51,6 +55,7 @@ class Menu extends Phaser.Scene{
 
     update(){
         if (Phaser.Input.Keyboard.JustDown(keySPACE)){
+            this.sound.play('button')
             this.scene.start('playScene');
         }
     }

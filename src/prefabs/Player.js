@@ -55,6 +55,7 @@ class JumpState extends State {
     enter(scene, player) {
         player.setVelocityY(player.velocity);
         player.anims.play(`jump`)
+        scene.sound.play('jump')
         player.once('animationcomplete', () => {
             this.stateMachine.transition('idle')
         })
@@ -71,6 +72,7 @@ class JumpState extends State {
 
 class HurtState extends State {
     enter(scene, player) {
+        scene.sound.play('thud')
         player.setVelocityY(0)
         scene.isCollided = false
         player.setTint(0xFF0000) //turn red
