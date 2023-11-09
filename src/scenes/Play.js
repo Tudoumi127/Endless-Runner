@@ -10,9 +10,19 @@ class Play extends Phaser.Scene{
     create(){
         this.gameOver = false;
         this.score = 0;
+        this.speed = 5;
         this.isCollided = false;
         this.keys = this.input.keyboard.createCursorKeys();
         this.keys.hurt = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.H)
+
+        this.difficulty = this.time.addEvent({
+            delay: 5000,
+            callback: () => {
+                this.speed += 5
+            },
+            callbackScope: this,
+            loop: true
+        })
 
         //tilesprite that will be moved later
         this.placeholder = this.add.tileSprite(0, 0, 720, 480, 'placeholder').setOrigin(0,0);
@@ -23,8 +33,15 @@ class Play extends Phaser.Scene{
         this.player.body.setCollideWorldBounds(true);
         this.world = this.player.body.touching;
 
+        //bubbles
+        const newBubble = new Bubble(this,game.config.width + borderUISize*5, borderUISize*5+borderPadding*5, 'rocket').setOrigin(0,0);
+        this.bubbles = this.physics.add.group(config = {
+            immovable: true,
+        })
+        this.bubbles.add(newBubble);
+
         //makes new platforms at random
-        const newPlatform = new Platform(this, game.config.width + borderUISize*3, borderUISize*5+borderPadding*2, '').setOrigin(0,0);
+        const newPlatform = new Platform(this, game.config.width + borderUISize*3, borderUISize*5+borderPadding*2, '', 0, this.speed).setOrigin(0,0);
         this.platforms = this.physics.add.group(config = {
             immovable: true,
         })
@@ -40,6 +57,19 @@ class Play extends Phaser.Scene{
         this.physics.add.collider(this.player, this.platforms, () => {
             this.isCollided = true;
         });
+        this.physics.add.collider(this.player, this.bubbles, (player, bubble) => {
+            bubble.destroy();
+            //bubble.bubDestroyed = true;
+            //console.log(bubble.bubDestroyed);
+            this.score += 1
+            console.log(this.score);
+            for (let i = 0; i<= 5; i++){
+                console.log("new bub")
+                this.bubbles.add(newBubble);
+                i+=1
+            }
+            //bubble.bubIsFather = true;
+        })
 
         //score tracker
         //this.scoreLeft = this.add.text(borderUISize + borderPadding, borderUISize + borderPadding/2)
@@ -56,6 +86,7 @@ class Play extends Phaser.Scene{
     }
 
     update(){
+        //console.log(this.speed)
         this.placeholder.tilePositionX += 4;
         this.player.update();
 
@@ -73,11 +104,36 @@ class Play extends Phaser.Scene{
 
             if(platform.child && !platform.isFather){
                 platform.child = false;
-                const newPlatform = new Platform(this, game.config.width + borderUISize*3, Phaser.Math.Between(50, 800), '').setOrigin(0,0);
+                const newPlatform = new Platform(this, game.config.width + borderUISize*3, Phaser.Math.Between(50, 800), '', 0, this.speed).setOrigin(0,0);
                 this.platforms.add(newPlatform);
                 this.platforms.add(newPlatform);
                 this.platforms.add(newPlatform);
                 platform.isFather = true;
+            }
+        })
+
+        this.bubbles.getChildren().forEach((bubble) => {
+            bubble.update();
+
+            if(bubble.bubDestroyed) {
+                //bubble.destroy();
+                //console.log("bubble has been destroyed");
+                this.bubbles.remove(bubble, true, true);
+                //bubble.bubDestroyed = false;
+            }
+            console.log(bubble.bubChild)
+            if(bubble.bubChild && !bubble.bubIsFather){
+                bubble.bubChild = false;
+                const newBubble = new Bubble(this, game.config.width + borderUISize*2, Phaser.Math.Between(50, 800), 'rocket').setOrigin(0,0);
+                /*this.bubbles.add(newBubble);
+                this.bubbles.add(newBubble);
+                this.bubbles.add(newBubble);
+                this.bubbles.add(newBubble);*/
+                for (let i = 0; i<= 5; i++){
+                    this.bubbles.add(newBubble);
+                    i+=1
+                }
+                bubble.bubIsFather = true;
             }
         })
 

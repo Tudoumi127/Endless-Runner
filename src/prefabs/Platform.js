@@ -1,9 +1,10 @@
 class Platform extends Phaser.Physics.Arcade.Sprite{
-    constructor(scene, x, y, texture, frame){
-        super(scene, x, y, texture, frame);
+    constructor(scene, x, y, texture, frame, movespeed){
+        super(scene, x, y, texture, frame, movespeed);
 
         scene.physics.add.existing(this, false);
-        this.moveSpeed = 3;
+        this.moveSpeed = movespeed;
+        console.log(this.moveSpeed)
         scene.add.existing(this);
         this.setImmovable(true);
         
