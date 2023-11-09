@@ -149,6 +149,7 @@ class Play extends Phaser.Scene{
         }
 
         if(this.gameOver == true){
+            this.score = 0;
             this.scene.start('gameOverScene');
         }
     }
