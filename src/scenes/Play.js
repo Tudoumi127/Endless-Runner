@@ -10,22 +10,36 @@ class Play extends Phaser.Scene{
     create(){
         this.gameOver = false;
         this.score = 0;
-        this.speed = 5;
+        this.speed = 3;
         this.isCollided = false;
         this.keys = this.input.keyboard.createCursorKeys();
         this.keys.hurt = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.H)
 
         this.difficulty = this.time.addEvent({
-            delay: 5000,
+            delay: 15000,
             callback: () => {
-                this.speed += 5
+                this.speed += 3
             },
             callbackScope: this,
             loop: true
         })
 
+        let scoreConfig = {
+            fontFamily: 'Palatino',
+            fontSize: '20px',
+            backgroundColor: '#ADD2E8',
+            color: '#FFFFFF',
+            align: 'right',
+            padding: {
+                top: 5,
+                bottom: 5,
+            },
+            fixedWidth: 0
+        }
+
+
         //tilesprite that will be moved later
-        this.placeholder = this.add.tileSprite(0, 0, 720, 480, 'placeholder').setOrigin(0,0);
+        this.placeholder = this.add.tileSprite(0, 0, 720, 480, 'background').setOrigin(0,0);
 
         //make the player
         this.player = new Player(this, game.config.width/4, game.config.height - 500, 'character', 0).setOrigin(0,0).setScale(1.5);
@@ -34,7 +48,7 @@ class Play extends Phaser.Scene{
         this.world = this.player.body.touching;
 
         //bubbles
-        const newBubble = new Bubble(this,game.config.width + borderUISize*5, borderUISize*5+borderPadding*5, 'rocket').setOrigin(0,0);
+        const newBubble = new Bubble(this, game.config.width + borderUISize*8, borderUISize*2+borderPadding*5, 'rocket', 0, this.speed).setOrigin(0,0);
         this.bubbles = this.physics.add.group(config = {
             immovable: true,
         })
@@ -50,6 +64,8 @@ class Play extends Phaser.Scene{
         //ground, physics and colliders
         this.ground = this.add.tileSprite(0, game.config.height - 42, game.config.width, game.config.height/6, '').setOrigin(0,0);
         this.physics.add.existing(this.ground, true);
+        this.rocks = this.add.tileSprite(0, 20, 720, 480, 'rocks').setOrigin(0,0);
+        this.upperrocks = this.add.tileSprite(0, 0, 720, 480, 'upperrocks').setOrigin(0,0);
 
         this.physics.add.collider(this.ground, this.player, () =>{
             this.gameOver = true;
@@ -57,37 +73,35 @@ class Play extends Phaser.Scene{
         this.physics.add.collider(this.player, this.platforms, () => {
             this.isCollided = true;
         });
+
+        this.scoreLeft = this.add.text(borderUISize + borderPadding, borderUISize + borderPadding * 2, this.score, scoreConfig);
+
         this.physics.add.collider(this.player, this.bubbles, (player, bubble) => {
             bubble.destroy();
-            //bubble.bubDestroyed = true;
-            //console.log(bubble.bubDestroyed);
             this.score += 1
-            console.log(this.score);
             for (let i = 0; i<= 5; i++){
-                console.log("new bub")
                 this.bubbles.add(newBubble);
                 i+=1
             }
             //bubble.bubIsFather = true;
         })
 
-        //score tracker
-        //this.scoreLeft = this.add.text(borderUISize + borderPadding, borderUISize + borderPadding/2)
-        /*this.DistanceTraveled = this.time.addEvent({
-            delay: 500,
+
+        this.scoreTracker = this.time.addEvent({
+            delay: 50,
             callback: () => {
-                let distance = Math.ceil(this.score/10);
-                this.scoreLeft.text = distance;
+                this.scoreLeft.text = this.score;
             },
             callbackScope: this,
             loop: true
-        })*/
+        })
 
     }
 
     update(){
-        //console.log(this.speed)
-        this.placeholder.tilePositionX += 4;
+        this.rocks.tilePositionX += 4;
+        this.upperrocks.tilePositionX += 4
+        this.placeholder.tilePositionX += 2;
         this.player.update();
 
         //increment fsm
@@ -104,7 +118,7 @@ class Play extends Phaser.Scene{
 
             if(platform.child && !platform.isFather){
                 platform.child = false;
-                const newPlatform = new Platform(this, game.config.width + borderUISize*3, Phaser.Math.Between(50, 800), '', 0, this.speed).setOrigin(0,0);
+                const newPlatform = new Platform(this, game.config.width + borderUISize*3, Phaser.Math.Between(50, 300), '', 0, this.speed).setOrigin(0,0);
                 this.platforms.add(newPlatform);
                 this.platforms.add(newPlatform);
                 this.platforms.add(newPlatform);
@@ -116,19 +130,11 @@ class Play extends Phaser.Scene{
             bubble.update();
 
             if(bubble.bubDestroyed) {
-                //bubble.destroy();
-                //console.log("bubble has been destroyed");
                 this.bubbles.remove(bubble, true, true);
-                //bubble.bubDestroyed = false;
             }
-            console.log(bubble.bubChild)
             if(bubble.bubChild && !bubble.bubIsFather){
                 bubble.bubChild = false;
-                const newBubble = new Bubble(this, game.config.width + borderUISize*2, Phaser.Math.Between(50, 800), 'rocket').setOrigin(0,0);
-                /*this.bubbles.add(newBubble);
-                this.bubbles.add(newBubble);
-                this.bubbles.add(newBubble);
-                this.bubbles.add(newBubble);*/
+                const newBubble = new Bubble(this, game.config.width + borderUISize*6, Phaser.Math.Between(50, 300), 'rocket', 0, this.speed).setOrigin(0,0);
                 for (let i = 0; i<= 5; i++){
                     this.bubbles.add(newBubble);
                     i+=1

@@ -1,3 +1,6 @@
+//part 543289402 of my games suffering because I refuse to pay for aseprite
+//#justice for browser pixel programs 2023
+
 let config = {
     type: Phaser.CANVAS,
     //width: 640,

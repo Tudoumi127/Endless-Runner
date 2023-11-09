@@ -1,9 +1,9 @@
 class Bubble extends Phaser.Physics.Arcade.Sprite{
-    constructor(scene, x, y, texture, frame){
+    constructor(scene, x, y, texture, frame, movespeed){
         super(scene, x, y, texture, frame);
 
         scene.physics.add.existing(this, false);
-        this.moveSpeed = 3;
+        this.moveSpeed = movespeed; 
         scene.add.existing(this);
         this.setImmovable(true);
         
